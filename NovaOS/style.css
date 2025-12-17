@@ -1,0 +1,106 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #020617, #020617);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Hamburger */
+#hamburger {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  width: 26px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#hamburger span {
+  display: block;
+  height: 3px;
+  background: #e5e7eb;
+  margin: 5px 0;
+  border-radius: 2px;
+}
+
+/* Menu */
+#menu {
+  position: fixed;
+  top: 0;
+  left: -220px;
+  width: 220px;
+  height: 100%;
+  background: #020617;
+  padding: 60px 15px;
+  transition: left 0.3s ease;
+  z-index: 999;
+}
+
+#menu.open {
+  left: 0;
+}
+
+#menu button {
+  width: 100%;
+  background: none;
+  border: 1px solid #334155;
+  color: #e5e7eb;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#menu button:hover {
+  background: #020617;
+}
+
+/* Taskbar */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: #020617;
+  border-top: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  font-size: 13px;
+}
+
+.brand { font-weight: 600; }
+
+/* Window */
+.window {
+  position: absolute;
+  top: 120px;
+  left: 120px;
+  width: 320px;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  animation: scaleIn 0.25s ease;
+}
+
+.window-header {
+  padding: 10px;
+  border-bottom: 1px solid #334155;
+  cursor: move;
+  font-size: 13px;
+}
+
+.window-body {
+  padding: 12px;
+  font-size: 13px;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
