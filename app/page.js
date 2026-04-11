@@ -6,12 +6,23 @@ import { useState, useRef, useEffect, useCallback } from "react";
 //  FEATURE DETECTION – Screen Share Support
 // ============================================================
 const checkScreenShareSupport = () => {
+  // Log user agent for debugging (can be removed in production)
+  console.log("User Agent:", navigator.userAgent);
+
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
-  if (isMobile) return { supported: false, reason: "mobile" };
-  if (!navigator.mediaDevices?.getDisplayMedia)
+  console.log("Is mobile detected:", isMobile);
+
+  if (isMobile) {
+    return { supported: false, reason: "mobile" };
+  }
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    console.error("getDisplayMedia API not found!");
     return { supported: false, reason: "api" };
+  }
+
   return { supported: true, reason: null };
 };
 
@@ -184,13 +195,28 @@ export default function Home() {
       // Immediate first capture
       captureAndAnalyze();
     } catch (err) {
-      console.error(err);
+      console.error("Screen share error:", err.name, err.message);
+
+      // Provide actionable guidance for common errors
       if (err.name === "NotAllowedError") {
-        setError("🚫 Screen sharing permission was denied.");
+        setError(
+          "🚫 Permission denied. To fix this:\n" +
+          "1. Click the lock icon in the address bar\n" +
+          "2. Set 'Screen Share' to 'Allow' or 'Ask'\n" +
+          "3. Refresh the page and try again."
+        );
       } else if (err.name === "AbortError") {
         setError("🛑 Request cancelled. Please try again.");
+      } else if (err.name === "InvalidStateError") {
+        setError("❌ Screen sharing already in progress in another tab.");
       } else {
-        setError(`❌ Screen sharing failed. Ensure you're using a desktop browser.`);
+        setError(
+          "❌ Screen sharing failed.\n\n" +
+          "Try these steps:\n" +
+          "• Use an incognito/private window\n" +
+          "• Disable browser extensions temporarily\n" +
+          "• Ensure you're on a desktop device"
+        );
       }
       setStatus("Ready");
     }
@@ -403,7 +429,7 @@ export default function Home() {
         /* Error Banner */
         .error-banner {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 12px;
           background: rgba(239, 68, 68, 0.12);
           border: 1px solid rgba(239, 68, 68, 0.35);
@@ -412,8 +438,10 @@ export default function Home() {
           margin-bottom: 28px;
           color: #fca5a5;
           font-size: 0.95rem;
+          line-height: 1.5;
           backdrop-filter: blur(10px);
           animation: shake 0.4s ease-out;
+          white-space: pre-line;
         }
 
         @keyframes shake {
